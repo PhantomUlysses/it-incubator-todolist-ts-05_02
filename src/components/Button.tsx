@@ -4,7 +4,7 @@ import {FilterValuesType} from "../App";
 type ButtonPropsType = {
     callback: () => void;
     name: string;
-    filter: FilterValuesType
+    filter?: FilterValuesType
 }
 
 export const Button = (props: ButtonPropsType) => {

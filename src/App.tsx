@@ -5,7 +5,7 @@ import {v1} from 'uuid';
 import {TaskType} from "../src_1/Todolist";
 
 export type FilterValuesType = "all" | "active" | "completed";
-export  type todolistsType = {
+export  type TodolistsType = {
     id: string,
     title: string,
     filter: FilterValuesType
@@ -18,7 +18,7 @@ function App() {
     let todolistID1 = v1();
     let todolistID2 = v1();
 
-    let [todolists, setTodolists] = useState<Array<todolistsType>>([
+    let [todolists, setTodolists] = useState<Array<TodolistsType>>([
         {id: todolistID1, title: 'What to learn', filter: 'all'},
         {id: todolistID2, title: 'What to buy', filter: 'all'},
     ])
@@ -98,6 +98,7 @@ function App() {
                         changeTaskStatus={changeStatus}
                         filter={m.filter}
                         removeTodolist={removeTodolist}
+                        todolists={todolists}
                     />
                 )
             })}

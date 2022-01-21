@@ -1,6 +1,8 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {FilterValuesType} from './App';
+import {FilterValuesType, TodolistsType} from './App';
 import {Button} from "./components/Button";
+import {InputWithButton} from "./components/InputWithButton";
+import {Input} from "./components/Input";
 
 type TaskType = {
     id: string
@@ -18,6 +20,7 @@ type PropsType = {
     changeTaskStatus: (todolistID: string,taskId: string, isDone: boolean) => void
     filter: FilterValuesType
     removeTodolist: (todolistId: string) => void
+    todolists: Array<TodolistsType>
 }
 
 export function Todolist(props: PropsType) {
@@ -34,16 +37,16 @@ export function Todolist(props: PropsType) {
         }
     }
 
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
-    }
+    // const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    //     setTitle(e.currentTarget.value)
+    // }
 
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
-        if (e.charCode === 13) {
-            addTask();
-        }
-    }
+    // const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+    //     setError(null);
+    //     if (e.charCode === 13) {
+    //         addTask();
+    //     }
+    // }
 
     // const onAllClickHandler = () => props.changeFilter(props.todolistID, 'all');
     // const onActiveClickHandler = () => props.changeFilter(props.todolistID,"active");
@@ -53,22 +56,35 @@ export function Todolist(props: PropsType) {
 
     const onClickHandlerForRemoveTodolist = () => props.removeTodolist(props.todolistID);
 
-    return <div>
-        <h3>{props.title}<button onClick={onClickHandlerForRemoveTodolist}>x</button></h3>
+    const onClickHandlerForRemoveTask = (id: string) => props.removeTask(props.todolistID, id);
 
-        <div>
-            <input value={title}
-                   onChange={onChangeHandler}
-                   onKeyPress={onKeyPressHandler}
-                   className={error ? "error" : ""}
-            />
-            <button onClick={addTask}>+</button>
-            {error && <div className="error-message">{error}</div>}
-        </div>
+    let todolist = props.todolists.find(f => f.id === props.todolistID);
+
+    return <div>
+        <h3>{todolist?.title || props.title}<Button callback={onClickHandlerForRemoveTodolist} name={'x'}/></h3>
+
+        {/*<InputWithButton addTask={props.addTask} todolistID={props.todolistID} />*/}
+        <Input title={title}
+               error={error}
+               setTitle={setTitle}
+               setError={setError}
+               addTask={addTask}
+        />
+        <Button callback={addTask} name={'+'} />
+
+        {/*<div>*/}
+        {/*    <input value={title}*/}
+        {/*           onChange={onChangeHandler}*/}
+        {/*           onKeyPress={onKeyPressHandler}*/}
+        {/*           className={error ? "error" : ""}*/}
+        {/*    />*/}
+        {/*    <button onClick={addTask}>+</button>*/}
+        {/*    {error && <div className="error-message">{error}</div>}*/}
+        {/*</div>*/}
         <ul>
             {
                 props.tasks.map(t => {
-                    const onClickHandler = () => props.removeTask(props.todolistID, t.id)
+                    // const onClickHandler = () => props.removeTask(props.todolistID, t.id);
                     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
                         props.changeTaskStatus(props.todolistID,t.id, e.currentTarget.checked);
                     }
@@ -78,7 +94,8 @@ export function Todolist(props: PropsType) {
                                onChange={onChangeHandler}
                                checked={t.isDone}/>
                         <span>{t.title}</span>
-                        <button onClick={onClickHandler}>x</button>
+                        {/*<button onClick={onClickHandler}>x</button>*/}
+                        <Button callback={() => onClickHandlerForRemoveTask(t.id)} name={'x'}/>
                     </li>
                 })
             }
